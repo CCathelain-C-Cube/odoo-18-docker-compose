@@ -2,9 +2,10 @@
 DESTINATION=$1
 PORT=$2
 CHAT=$3
+MASTERPW=$4
 
 # Clone Odoo directory
-git clone --depth=1 https://github.com/minhng92/odoo-18-docker-compose $DESTINATION
+git clone --depth=1 https://github.com/CCathelain-C-Cube/odoo-18-docker-compose $DESTINATION
 rm -rf $DESTINATION/.git
 
 # Create PostgreSQL directory
@@ -13,6 +14,7 @@ mkdir -p $DESTINATION/postgresql
 # Change ownership to current user and set restrictive permissions for security
 sudo chown -R $USER:$USER $DESTINATION
 sudo chmod -R 700 $DESTINATION  # Only the user has access
+
 
 # Check if running on macOS
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -31,10 +33,12 @@ fi
 # Update docker-compose configuration
 if [[ "$OSTYPE" == "darwin"* ]]; then
   # macOS sed syntax
+  sed -i '' 's/<master_password>/'$MASTERPW'/g' $DESTINATION/etc/odoo.conf
   sed -i '' 's/10018/'$PORT'/g' $DESTINATION/docker-compose.yml
   sed -i '' 's/20018/'$CHAT'/g' $DESTINATION/docker-compose.yml
 else
   # Linux sed syntax
+  sed -i 's/<master_password>/'$MASTERPW'/g' $DESTINATION/etc/odoo.conf
   sed -i 's/10018/'$PORT'/g' $DESTINATION/docker-compose.yml
   sed -i 's/20018/'$CHAT'/g' $DESTINATION/docker-compose.yml
 fi
